@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useMemo } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -8,32 +9,58 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Chip } from "@mui/material";
+import { remove } from "../redux/features/usersSlice";
+import { calcAge } from "../helpers";
 
-const heads = ["index", "name", "lastname", "birthday date", "skills", "actions"].map(val => (
-  <TableCell key={val}>{val.toUpperCase()}</TableCell>
+const heads = ["index", "name", "lastname", "age", "skills", "actions"].map((val, index) => (
+  <TableCell key={index}>{val.toUpperCase()}</TableCell>
 ));
 
-export default function BasicTable() {
+function createChipFromSkills(skills) {
+  return skills.map(
+    (value, index) => <Chip key={index} label={value} color="primary" variant="outlined" />,
+    []
+  );
+}
+
+export default function BasicTable({ setUserID, handleModalOpen }) {
   const users = useSelector(state => state.users);
+  const dispatch = useDispatch();
+
+  function removeUser(id) {
+    dispatch(remove(id));
+  }
 
   const tableRowElements = useMemo(
     () =>
-      users.map((row, i) => (
-        <TableRow key={row.name} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-          <TableCell component="th" scope="row">
-            {i + 1}
-          </TableCell>
-          <TableCell>{row.name}</TableCell>
-          <TableCell>{row.lastname}</TableCell>
-          <TableCell>{row.birthDayDate}</TableCell>
-          <TableCell>{row.skills}</TableCell>
-          <TableCell>
-            <DeleteIcon sx={{ color: "red", cursor: "pointer" }} />
-            <EditIcon sx={{ cursor: "pointer" }} />
-          </TableCell>
-        </TableRow>
-      )),
+      users.map((user, index) => {
+        return (
+          <TableRow key={index} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+            <TableCell component="th" scope="row">
+              {index + 1}
+            </TableCell>
+            <TableCell>{user.name}</TableCell>
+            <TableCell>{user.lastname}</TableCell>
+            <TableCell>{user.birthdayDate ? calcAge(user.birthdayDate) : undefined}</TableCell>
+            <TableCell>{createChipFromSkills(user.skills)}</TableCell>
+            <TableCell>
+              <DeleteIcon
+                onClick={() => removeUser(user.id)}
+                sx={{ color: "red", cursor: "pointer" }}
+              />
+              <EditIcon
+                onClick={() => {
+                  setUserID(user.id);
+                  handleModalOpen();
+                }}
+                sx={{ cursor: "pointer" }}
+              />
+            </TableCell>
+          </TableRow>
+        );
+      }),
     [users]
   );
 
