@@ -11,3 +11,11 @@ export function calcAge(timestamp) {
   var ageDate = new Date(ageDifMs);
   return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
+
+export function saveOnLocalStorage(key, data) {
+  window.localStorage.setItem(key, JSON.stringify(data));
+}
+
+export function getFromLocalStorage(key) {
+  return JSON.parse(window.localStorage.getItem(key));
+}

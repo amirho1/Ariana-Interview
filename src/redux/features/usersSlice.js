@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { lastIndexId } from "../../helpers";
+import { getFromLocalStorage, lastIndexId } from "../../helpers";
 
-const initialState = [
+const initialState = getFromLocalStorage("users") || [
   {
     name: "AmirHossein",
     lastname: "Salighedar",
@@ -33,6 +33,10 @@ const usersSlice = createSlice({
 export function selectUser(id) {
   if (!id) return () => null;
   return state => state.users.find(user => user.id === id);
+}
+
+export function getUsers(state) {
+  return state.users;
 }
 
 export const { add, remove, edit } = usersSlice.actions;
