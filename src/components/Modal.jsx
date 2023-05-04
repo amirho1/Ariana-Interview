@@ -9,7 +9,7 @@ import { preventDefault } from "../helpers";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import CheckMarks from "./CheckMarks.jsx";
+import MultipleSelectCheckMarks from "./MultipleSelectCheckMarks.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { add, edit, selectUser } from "../redux/features/usersSlice";
 import dayjs from "dayjs";
@@ -140,7 +140,7 @@ export default function Modal({ handleModalClose, display, id, setUserID }) {
             </LocalizationProvider>
           </Box>
           <Box>
-            <CheckMarks value={user.skills} onChange={onChange("skills")} />
+            <MultipleSelectCheckMarks value={user.skills} onChange={onChange("skills")} />
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Button variant="contained" onClick={addUserToReduxOrEdit}>
